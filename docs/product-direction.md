@@ -51,7 +51,7 @@ Native host permission/activation differences must remain visible.
 | Capability | Evidence | Remaining product gap |
 | --- | --- | --- |
 | Natural-language host entry | 0.9.0 first-party skill and connect/start/next in experience.py | Actual new host loading and user preference are not measured |
-| Project grounding | project.py inspects bounded dependency manifests; blueprint.py accepts grounded model decisions and exclusions | Not a general source/architecture understanding engine or a complete inventory of existing host capabilities |
+| Project grounding | project.py inspects bounded dependency manifests and explicitly selected local documents; blueprint.py accepts grounded model decisions and exclusions | Not a general source/architecture understanding engine or a complete inventory of existing host capabilities |
 | Current resource research | research/service/orchestration modules bind bounded observations, review and session state | Useful eligible coverage and recommendation advantage are not established by passing tests |
 | Portable, reviewed changes | Host contracts, provenance, stage/apply/verify and lifecycle recovery | Portable outputs do not prove equivalent runtime behavior or successful task handoff |
 | Reliability | Source/installed regressions, six-platform CI and disposable upgrade evidence linked in PR #4 | These establish engineering behavior, not outcome quality, retention or acquisition value |
@@ -60,6 +60,16 @@ Native host permission/activation differences must remain visible.
 0.8.0 is unchanged. No task-quality advantage is inferred from that PR. The
 [bounded inventory increment](existing-environment.md) adds local observations;
 semantic coverage and outcome-quality improvements remain unmeasured.
+
+## Latest source checkpoint — November 7, 2026
+
+The first three practical improvements now have an unreleased 0.10.0 implementation:
+[isolated setup/runtime-bound connection](quickstart-development.md),
+[explicit selected project text](project-context.md), and
+[request coverage plus resource necessity review](recommendation-review.md).
+This supplies more useful local evidence and exposes unjustified choices; it does
+not establish preference or measured recommendation/task-quality improvements.
+Outcome comparisons and broader maintenance/handoff remain further work.
 
 ## Next implementation order
 

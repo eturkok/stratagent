@@ -21,6 +21,10 @@ Describe your project → Review the proposed workspace → Approve exact change
 
 [0.9.0 preview release](https://github.com/etrkk5/stratagent/releases/tag/v0.9.0) · [Offline walkthrough](docs/demo-0.8.0.md) · [Support](SUPPORT.md) · [Security](SECURITY.md)
 
+**Next release, 0.10.0 source:** [simpler setup, selected project context and grounded
+recommendation review](docs/quickstart-development.md). The public 0.9.0 preview
+keeps its versioned installation and behavior.
+
 ## What makes StratAgent useful?
 
 - **See the existing setup.** Inspect project-local guidance, skill/role metadata, recorded ownership and possible overlaps before proposing additions. Existing files remain under their current ownership; matching names do not prove equivalent capabilities. [Inspection scope](docs/existing-environment.md).

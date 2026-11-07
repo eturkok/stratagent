@@ -1,5 +1,51 @@
 # Validation
 
+## Unreleased 0.10.0 setup, selected context and recommendation review — November 7, 2026
+
+The first three product priorities have an engineering implementation:
+[isolated setup](quickstart-development.md), [selected local evidence](project-context.md)
+and [request/resource review](recommendation-review.md). Published 0.9.0 assets
+and historical evidence below remain unchanged.
+
+- **498 tests discovered: 497 pass, one Windows-only junction test skipped**, both
+  from source and from a separately installed wheel with PYTHONPATH unset and the
+  working directory outside the checkout, macOS/Python 3.14.7. Thirty-three new
+  methods cover setup preservation/runtime binding, current selected-document
+  evidence, EN/TR coverage and justified resource decisions.
+- Actual offline installer → repeat/reuse → first-party host connection → README
+  selection → request/submit/review/accept → keep runs in CLI subprocesses. It
+  requires no shell activation, ignores a deliberately shadowing caller PYTHONPATH,
+  preserves its original project file and installs zero new resource files.
+  Its assessment is synthetic; no model or native host is launched.
+- Actual online source installation and explicit upgrade pass in a separate
+  installer-owned runtime. A changed checkout is refused without --upgrade and
+  its receipt remains intact. Network is used for pinned build/runtime packages;
+  this is distinct from the offline acceptance's zero network calls. No global
+  shell/host settings or application project files are changed.
+- Actual macOS system Python 3.9.6 rejects installation with an actionable Python
+  3.11+ message before runtime creation, rather than failing on tomllib import.
+- Context tests cover no implicit document reads, exact reviewed selections,
+  pre-initialization state, current quotes in architectural inference, stale
+  approvals/requests, opt-out, credentials/control/binary withholding, file/read
+  budgets, FIFO/redirect refusal and scope/egress separation.
+- Quality tests reject omitted/unrelated request mappings, missing/invented
+  source explanations, already-covered needs used to justify new resources and
+  identical relative-path/content bundles. Different reference layouts remain
+  distinct. The assessed research → comparison → trust review → stage/apply/verify
+  fixture preserves repository approval as a separate gate.
+- Original installed CLI acceptance still verifies 46 demo outputs; the 15-command
+  lifecycle fixture retains four original user files across four transactions.
+- Skill structural validation, compileall and local documentation links pass.
+  The six native CI jobs now include offline onboarding in addition to source,
+  installed, lifecycle, reproducible-bundle and distribution checks. Exact-commit
+  outcomes are recorded in the pull request and Actions runs, not inferred from
+  this local result.
+
+These are automated maintainer checks. They do not prove semantic completeness,
+recommendation superiority, native skill discovery or human preference. Previously
+waived host/human/independent-installation trials remain waived and unevaluated.
+No PyPI publication or 0.10.0 GitHub release is performed by this implementation.
+
 ## Unreleased 0.9.0 workspace-fit usability increment — October 23, 2026
 
 [Fit assessments](workspace-fit.md) let the host explain actual needs, existing/host

@@ -4,6 +4,7 @@ import json
 import re
 
 from .common import StratagentError, canonical, identity
+from .quality import JUSTIFICATIONS
 from .planner import DOMAINS, REQUIREMENTS, SPECIALISTS, matches, waves, words
 
 CAPABILITIES = {
@@ -44,7 +45,7 @@ DECISION_SCHEMA = {
                            "evidence_refs": {"type": "array", "minItems": 1, "maxItems": 20, "items": {"type": "string"}}}}},
         "bindings": {"type": "array", "maxItems": 9, "items": {
             "type": "object", "additionalProperties": False, "required": ["task_id", "skills", "mcps", "reason"],
-            "properties": {"task_id": {"type": "string"}, "reason": {"type": "string", "minLength": 3, "maxLength": 2000},
+            "properties": {"task_id": {"type": "string"}, "justifications": JUSTIFICATIONS, "reason": {"type": "string", "minLength": 3, "maxLength": 2000},
                            "skills": {"type": "array", "maxItems": 3, "uniqueItems": True, "items": {"type": "string"}},
                            "mcps": {"type": "array", "maxItems": 3, "items": {
                                "type": "object", "additionalProperties": False, "required": ["candidate_id", "option"],
@@ -91,6 +92,8 @@ def decision_context(analysis, skills, mcps, targets, research_session=None):
     evidence.extend({"id": "manifest:" + entry["path"], "source": "dependency-manifest", "data": entry} for entry in (analysis.get("project") or {}).get("files", []))
     evidence.extend({"id": entry["evidence_id"], "source": "untrusted-local-definition", "data": entry}
                     for entry in (analysis.get("project") or {}).get("environment", {}).get("files", []))
+    evidence.extend({"id": record["evidence_id"], "source": "untrusted-project-document", "data": record}
+                    for record in (analysis.get("project") or {}).get("documents", {}).get("files", []))
     evidence.extend({"id": "skill:" + entry["id"], "source": "untrusted-reviewed-metadata", "review_digest": entry["review_digest"]} for entry in skills)
     evidence.extend({"id": "mcp:" + entry["id"], "source": "untrusted-registry-metadata", "review_digest": entry["review_digest"]} for entry in mcps)
     context = {"schema_version": 1, "analysis": analysis, "skills": sorted(skills, key=lambda entry: entry["id"]),
@@ -187,7 +190,7 @@ def interpret(context, decisions=None):
         for inference in decisions.get("domain_inferences", []):
             domain = inference["domain"]
             project_refs = [entry for entry in context["evidence"] if entry["id"] in inference["evidence_refs"] and entry["source"] not in ("untrusted-reviewed-metadata", "untrusted-registry-metadata")]
-            if not any(inference["quote"] in (entry.get("text", "") or json.dumps(entry.get("data", {}), ensure_ascii=False)) for entry in project_refs):
+            if not any(inference["quote"] in ((entry.get("data", {}).get("text", "") if entry.get("source") == "untrusted-project-document" else entry.get("text", "") or json.dumps(entry.get("data", {}), ensure_ascii=False))) for entry in project_refs):
                 raise StratagentError("Domain inference must quote actual user/project evidence, not available tool metadata.")
             if domain in inferred or domain in {item["id"] for item in analysis["domain_exclusions"]}:
                 raise StratagentError("Decision repeats a domain or contradicts an explicit domain exclusion.")

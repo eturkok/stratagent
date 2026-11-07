@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased — 0.10.0 simpler setup and grounded recommendations
+
+- One reviewed-source installer creates and verifies an isolated runtime, reuses matching installs and supports offline matching wheels; unmarked environments and shell settings are preserved.
+- `setup --host` separates runtime health, project instructions and unobserved native loading; project connections retain the exact runtime launcher.
+- Explicit bounded README/architecture/test selections supply untrusted current local evidence without recursive scanning, execution or implicit outbound queries.
+- Request-part coverage makes omissions, constraints and uncertainty visible before keep/research decisions.
+- Assessed resource choices require actual gap references, reviewed description quotes, reasons and alternatives; exact duplicate bundles are rejected and remaining gaps stay visible.
+- Offline installer → connection → selected context → synthetic keep acceptance joins native CI. Existing field waivers remain unevaluated; no measured accuracy gain or host certification is claimed.
+
+See the [source quickstart](docs/quickstart-development.md), [context scope](docs/project-context.md) and [recommendation review](docs/recommendation-review.md).
+
 ## 0.9.0 — Developer Preview (October 24, 2026)
 
 - Grounded needs/coverage assessments with explicit keep or research outcomes before adding roles/tools; no-change acceptance installs no environment files and performs no search.

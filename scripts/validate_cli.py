@@ -67,6 +67,10 @@ def validate():
                     "needs": [{"need": "Test the Python API", "quote": "Python API with tests", "status": "existing",
                                "reason": "The existing project-local testing definition is sufficient for this controlled review fixture.",
                                "evidence_refs": ["request", reference], "existing": [reference]}],
+                    "coverage": [{"part_id": part["id"], "status": "covered" if index == 0 else "constraint",
+                                  "need_indexes": [0] if index == 0 else [],
+                                  "reason": "Keep the existing testing coverage." if index == 0 else "Keep payments outside the project scope."}
+                                 for index,part in enumerate(fit["request_parts"])],
                     "alternatives": ["Research another testing resource only if a concrete coverage gap appears."]}
         cli(minimal, "session-submit", card["session_id"], "--request-id", request["request_id"], "--response-stdin",
             proposal={"action": "assess", "assessment": proposal})

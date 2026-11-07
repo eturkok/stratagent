@@ -16,9 +16,11 @@ def parser():
     root.add_argument("--log-json", action="store_true", help="Emit structured command events to stderr, without prompts, credentials or file contents")
     commands = root.add_subparsers(dest="command", metavar="COMMAND")
     for name, help_text in {
+        "setup": "Check installation and prepare a reviewed connection to your coding agent",
         "connect": "Preview a first-party project skill so your coding agent can discover StratAgent",
         "start": "Start or continue an agent-guided workspace plan from your project request",
         "next": "Explain the next useful step without searching, installing or changing state",
+        "context": "Review explicitly selected project documents as local evidence; no recursive scan or execution",
         "environment": "Inspect existing project-local agent guidance, skills and ownership without changing files",
         "init": "Analyze a prompt and initialize a workspace (no external code)",
         "prepare": "Turn one project idea into researched skills/MCP choices and a reviewable environment blueprint; never auto-install",
@@ -65,19 +67,24 @@ def parser():
         sub = commands.add_parser(name, help=help_text)
         sub.add_argument("--workspace", default=argparse.SUPPRESS, help="Project directory (demo may create it)")
         sub.add_argument("--log-json", action="store_true", default=argparse.SUPPRESS, help="Emit structured events to stderr")
-        if name in ("connect", "start", "next", "environment"):
+        if name in ("setup", "connect", "start", "next", "environment", "context"):
             sub.add_argument("--json", action="store_true", help="Structured agent response; the default is a concise human view")
-        if name in ("start", "connect"):
-            sub.add_argument("--platforms", help="Comma-separated host IDs; your agent should select the current host")
+        if name in ("start", "setup", "connect"):
+            sub.add_argument("--platforms", "--host", help="Current host ID, or comma-separated host IDs for an intentional multi-host setup")
         if name == "start":
             sub.add_argument("prompt", help="The user's actual project request")
             sub.add_argument("--new-session", action="store_true", help="Deliberately create a new session rather than reuse existing progress")
         if name == "next":
             sub.add_argument("--session", help="Select one session explicitly when several exist")
             sub.add_argument("--details", action="store_true", help="Include the current model schema or exact blueprint/diff/content")
-        if name == "connect":
+        if name in ("setup", "connect"):
             sub.add_argument("--apply", action="store_true", help="Add only the exact reviewed first-party skill files")
             sub.add_argument("--approve", help="Exact connection preview digest; handled by your agent")
+        if name == "context":
+            sub.add_argument("paths", nargs="*", help="Explicit project-relative document/test paths; no globs or directory scans")
+            sub.add_argument("--clear", action="store_true", help="Review clearing the selected-document list, preserving files")
+            sub.add_argument("--apply", action="store_true", help="Save only an exactly reviewed selection")
+            sub.add_argument("--approve", help="Exact selection review digest, handled by your agent")
         if name == "doctor":
             sub.add_argument("--check-files", action="store_true", help="Also verify managed hashes/modes, up to 16 MiB total; never repair")
         if name in ("init", "plan", "prepare", "research-request", "research-preview", "session-start", "revise"):
@@ -101,9 +108,9 @@ def parser():
             sub.add_argument("key", help="Exact installation key from status")
         if name == "init":
             sub.add_argument("--platforms", default=",".join(DEFAULT_TARGETS), help="Comma-separated adapter IDs; see stratagent platforms")
-            sub.add_argument("--no-scan-project", action="store_true", help="Use only the prompt; skip bounded local manifest and agent-definition inspection")
+            sub.add_argument("--no-scan-project", action="store_true", help="Use only the prompt; skip manifests, local agent definitions and selected project documents")
         if name == "plan":
-            sub.add_argument("--scan-project", action="store_true", help="Include bounded local manifest and agent-definition evidence from --workspace; writes nothing")
+            sub.add_argument("--scan-project", action="store_true", help="Include bounded manifests, agent definitions and selected project documents from --workspace; writes nothing")
         if name == "prepare":
             sub.add_argument("--platforms", help="Comma-separated adapter IDs; existing workspace selection is preserved by default")
             sub.add_argument("--limit", type=int, default=6, help="Total GitHub definition reviews, 1–20")
@@ -182,6 +189,7 @@ def main(argv=None):
     if args.command is None:
         print("StratAgent — design your agent workspace with the coding agent you already use.\n\n"
               "Tell your agent: Use StratAgent to prepare this project's agent workspace.\n\n"
+              "  setup     Check installation and connect project instructions to your agent\n"
               "  connect   Preview project-local integration instructions for your agent\n"
               "  start     Describe a project and start or continue its reviewed plan\n"
               "  next      See what matters now and what to do next\n\n"
@@ -200,6 +208,17 @@ def main(argv=None):
 
     event("command.started")
     try:
+        if args.command == "setup":
+            from .diagnostics import diagnose
+            health = diagnose(args.workspace, False)
+            if not health["ok"]:
+                result = {"schema_version": 1, "phase": "setup-attention", "health": health,
+                          "headline": "The local installation needs attention",
+                          "summary": "Run doctor with this Python interpreter and resolve the reported check before connecting. Existing files were preserved."}
+                messages = [check["message"] + " " + check["action"] for check in health["checks"] if check["status"] == "fail"]
+                print(json.dumps(result, indent=2) if args.json else result["headline"] + "\n" + "\n".join(messages) + "\n" + result["summary"])
+                event("command.completed", 2)
+                return 2
         if args.command == "doctor":
             from .diagnostics import diagnose
             result = diagnose(args.workspace, args.check_files)
@@ -218,25 +237,34 @@ def main(argv=None):
         from .lifecycle import Transactions
         from .assurance import Assurance
 
-        if args.command in ("connect", "start", "next", "environment"):
-            from .experience import begin, connect, guide, render
+        if args.command in ("setup", "connect", "start", "next", "environment", "context"):
+            from .experience import begin, connect, guide, render, setup
             forge = Stratagent(args.workspace)
-            if args.command == "environment":
+            if args.command == "context":
+                from .context import configure, render_context
+                if args.clear and args.paths:
+                    raise StratagentError("Choose paths or --clear, not both.")
+                result = configure(forge.ws, [] if args.clear else args.paths or None, args.approve, args.apply)
+                print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True) if args.json else render_context(result))
+                exit_code = 0 if result["selected"]["complete_within_scope"] else 2
+                event("command.completed", exit_code)
+                return exit_code
+            elif args.command == "environment":
                 from .environment import render_environment
                 result = forge.environment()
                 print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True) if args.json else render_environment(result))
                 event("command.completed", 0)
                 return 0
-            elif args.command == "connect":
+            elif args.command in ("setup", "connect"):
                 if args.approve is not None and not args.apply:
                     raise StratagentError("Connection approval requires --apply; preview writes nothing.")
-                result = connect(forge, args.platforms.split(",") if args.platforms is not None else None, args.approve, args.apply)
+                result = (setup if args.command == "setup" else connect)(forge, args.platforms.split(",") if args.platforms is not None else None, args.approve, args.apply)
             elif args.command == "start":
                 result = begin(forge, args.prompt, args.platforms.split(",") if args.platforms is not None else None, args.new_session)
             else:
                 result = guide(forge, args.session, args.details)
             print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True) if args.json else render(result))
-            exit_code = 2 if args.command == "connect" and result["phase"] == "blocked" else 0
+            exit_code = 2 if result["phase"] in ("blocked", "setup-attention") else 0
             event("command.completed", exit_code)
             return exit_code
         if args.command == "platforms":
