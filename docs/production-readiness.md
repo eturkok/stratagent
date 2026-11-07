@@ -8,6 +8,20 @@ A user describes a project. At runtime StratAgent interprets its needs, research
 
 V1 scope is a local CLI plus a narrowly authorized coding-client integration, with host/provider-independent domain logic. It is not a hosted multi-tenant execution service. External text and model output are untrusted data. Popularity is not safety; a policy pass is not a claim of "safest." Source discovery, source review, local installation, credential provision and external process/network activation are separate authorities.
 
+## Latest source checkpoint — November 7, 2026
+
+Unreleased 0.10.0 improves installation/connection, project grounding and resource
+review in that order. A standard-library source installer uses an isolated runtime
+and returns its exact launcher; setup reports health/instruction presence without
+claiming host loading. Explicit selected local documents enter current evidence,
+not scope/permission or automatic outbound queries. Request-part mappings and
+resource gap/source-quote/alternative checks expose omissions and unnecessary
+additions while preserving existing trust, approval and lifecycle boundaries.
+See [source quickstart](quickstart-development.md) and [recommendation review](recommendation-review.md).
+Published 0.9.0 artifacts and previous field waivers are preserved. Automation
+checks structural/engineering behavior; task-quality and human preference remain
+unmeasured. PyPI remains separate.
+
 ## Current product priority — agent-first experience, October 23, 2026
 
 The user prioritized a compelling, simple product experience before further

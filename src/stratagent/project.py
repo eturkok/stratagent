@@ -7,6 +7,7 @@ import tomllib
 
 from .common import MAX_FILE, StratagentError, digest, identity
 from .environment import inspect_environment
+from .context import observe as selected_documents
 
 MANIFEST_NAMES = ("package.json", "pyproject.toml", "requirements.txt", "Cargo.toml", "go.mod")
 DEPENDENCIES = {
@@ -103,7 +104,8 @@ def inspect_project(workspace):
             warnings.append({"path": relative, "reason": "unsafe-path"})
         except (OSError, ValueError, TypeError, AttributeError, UnicodeError, RecursionError):
             warnings.append({"path": relative, "reason": "unreadable-or-invalid-manifest"})
-    result = {"method": "bounded-manifests-v1", "files": evidence, "signals": signals, "warnings": warnings,
+    result = {"method": "bounded-manifests-selected-documents-v2", "files": evidence, "signals": signals, "warnings": warnings,
               "environment": inspect_environment(workspace, include_managed=False)["planning"],
+              "documents": selected_documents(workspace),
               "limits": {"bytes_per_file": MAX_FILE, "packages_per_directory": 8, "recursive_source_scan": False}}
     return {**result, "fingerprint": identity(result)}

@@ -11,7 +11,8 @@ from .registry import Registry
 from .planner import analyze
 from .project import inspect_project
 from .research import RESEARCH_SCHEMA, project_context
-from .fit import FIT_SCHEMA, request as fit_request, review as fit_review
+from .quality import review_recommendations
+from .fit import FIT_RESPONSE_SCHEMA, FIT_SCHEMA, request as fit_request, review as fit_review
 
 HEX = {"type": "string", "pattern": "^[0-9a-f]{64}$"}
 RUN = {"type": "string", "pattern": "^[0-9a-f]{32}$"}
@@ -216,12 +217,12 @@ class Orchestrator:
                 payload["decision_request"] = self.service.decision_request(value["runs"][-1]["id"])
             if value.get("fit"):
                 payload["assessment"] = value["fit"][0]
-                payload["instructions"] += " Relate each new resource choice to the assessed gaps and consider the existing host/setup before adding tools. Explain remaining gaps and alternatives honestly."
+                payload["instructions"] += " Every selected resource requires a binding.justifications entry linking its candidate to assessed gap need_indexes, an actual candidate_quote from the reviewed description, a concrete reason and an alternative including no addition. Reuse resources instead of duplicate content. Explain remaining gaps honestly; choosing no resources is valid."
             if value["state"] == "research-needed":
                 if not value.get("fit"):
                     payload["allowed_actions"].insert(0, "assess")
                     payload["fit_request"] = fit_request(self.service)
-                    payload["response_schemas"]["fit"] = FIT_SCHEMA
+                    payload["response_schemas"]["fit"] = FIT_RESPONSE_SCHEMA
                 else:
                     payload["assessment"] = value["fit"][0]
                 payload["instructions"] += " First assess actual needs using fit_request when available. A sufficient existing setup may be proposed with action=assess and assessment.outcome=keep; no search or new role files are required. A research assessment must identify gaps, which should guide subsequent queries and resource choices."
@@ -231,6 +232,7 @@ class Orchestrator:
             result["search_review"] = self._search_preview(value)
         elif value["state"] == "review-required":
             result["blueprint"] = self.service.blueprint(value["decisions"][0], run_id=value["runs"][-1]["id"])
+            result["recommendation_review"] = review_recommendations(self.service.blueprint_context(value["runs"][-1]["id"]), value["fit"][0], value["decisions"][0]) if value.get("fit") else {"status": "not-assessed", "note": "This legacy/direct decision has no needs assessment."}
         elif value["state"] in ("fit-review-required", "complete-no-change"):
             result["fit_review"] = fit_review(self.service, value["fit"][0], value["id"])
         elif value["state"] == "clarification-needed":
@@ -268,6 +270,9 @@ class Orchestrator:
                 updates = {"questions": response["questions"], "decisions": []}
                 state, code = "clarification-needed", "clarification-requested"
             elif action == "decide":
+                validate_shape(response["decision"], DECISION_SCHEMA)
+                if value.get("fit"):
+                    review_recommendations(current["decision_request"]["context"], value["fit"][0], response["decision"])
                 self.service.blueprint(response["decision"], run_id=value["runs"][-1]["id"])
                 updates = {"decisions": [response["decision"]]}
                 state, code = "review-required", "decision-proposed"

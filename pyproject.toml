@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stratagent-cli"
-version = "0.9.0"
+version = "0.10.0"
 description = "StratAgent: a platform-agnostic agent workspace architect with reviewed skills and MCP provenance"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,10 +13,10 @@ license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 dependencies = ["PyYAML==6.0.3"]
 
 [project.urls]
-Homepage = "https://github.com/etrkk5/stratagent"
-Repository = "https://github.com/etrkk5/stratagent"
-Issues = "https://github.com/etrkk5/stratagent/issues"
-Documentation = "https://github.com/etrkk5/stratagent#readme"
+Homepage = "https://github.com/eturkok/stratagent"
+Repository = "https://github.com/eturkok/stratagent"
+Issues = "https://github.com/eturkok/stratagent/issues"
+Documentation = "https://github.com/eturkok/stratagent#readme"
 
 [project.scripts]
 stratagent = "stratagent.cli:main"

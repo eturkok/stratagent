@@ -4,7 +4,9 @@ Guidance never searches, grants trust, stages, applies or repairs. Commands are
 argument arrays for a host to review, not executable shell text.
 """
 import hmac
+import json
 from importlib.resources import files as package_files
+from pathlib import Path
 import re
 import stat
 import sys
@@ -38,8 +40,10 @@ def _initialization(service):
         service.lock()
         return "initialized"
     state = service.ws.path(".stratagent")
-    if any(present) or (state.exists() and (not state.is_dir() or any(p.name != ".mutation-lock" for p in state.iterdir()))):
+    if any(present) or (state.exists() and (not state.is_dir() or any(p.name not in (".mutation-lock", "context.json") for p in state.iterdir()))):
         return "partial"
+    from .context import selection
+    selection(service.ws)
     marker = service.ws.path(".stratagent/.mutation-lock")
     if marker.exists():
         info = marker.lstat()
@@ -48,9 +52,15 @@ def _initialization(service):
     return "fresh"
 
 
+def launcher():
+    # Installed runtimes ignore caller PYTHONPATH/cwd shadow packages. Source-only
+    # development retains its explicit import path; no symlink resolution loses venvs.
+    isolated = Path(__file__).parents[1].name in ("site-packages", "dist-packages")
+    return [sys.executable, *(["-I", "-X", "utf8"] if isolated else []), "-m", "stratagent"]
+
+
 def command(service, name, *arguments):
-    # Keep the running virtual environment; resolving its symlink loses the venv.
-    return [sys.executable, "-m", "stratagent", name, *arguments, "--workspace", str(service.ws.root)]
+    return [*launcher(), name, *arguments, "--workspace", str(service.ws.root)]
 
 
 def _card(service, phase, headline, summary, action, *, session=None, **extra):
@@ -120,7 +130,8 @@ def _review(service, current, details):
                                     "mcp_proposals": len({(m["candidate_id"], m["option"]) for role in roles for m in role["mcp_proposals"]})},
                 "file_changes": [{"path": c["path"], "action": c["action"]} for c in changes],
                 "blockers": blockers, "open_questions": blueprint["open_questions"],
-                "research": blueprint.get("freshness"), "activation": "none"}
+                "research": blueprint.get("freshness"), "activation": "none",
+                "recommendation_review": current.get("recommendation_review", {"status": "not-assessed"})}
     if session.get("fit"):
         overview["assessed_needs"] = session["fit"][0]["needs"]
     action = {"kind": "resolve-blockers" if blockers else "review-workspace", "requires_user": True,
@@ -148,6 +159,9 @@ def guide(service, session_id=None, details=False):
         if service.ws.path(MANIFEST).exists() and service.manifest()["analysis"].get("project") is None:
             card["environment"] = {"status": "not-inspected", "reason": "project-scan-disabled"}
         else:
+            from .context import observe
+            documents = observe(service.ws)
+            card["selected_context"] = {"paths": documents["selection"], "complete_within_scope": documents["complete_within_scope"], "warnings": documents["warnings"]}
             report = service.environment()
             card["environment"] = {key: report[key] for key in ("summary", "complete_within_scope", "warnings", "possible_overlaps")}
             if details:
@@ -276,6 +290,12 @@ def connect(service, targets=None, approval=None, apply=False):
         raise StratagentError("Workspace initialization is incomplete; run doctor before connecting.")
     selected = platforms(list(DEFAULT_TARGETS) if targets is None else targets)
     data = package_files("stratagent").joinpath("data/skills/stratagent/SKILL.md").read_bytes()
+    runtime = launcher()
+    data += ("\n## Project connection launcher\n\n"
+             "Use this argument array for this connection, even when `stratagent` is not on PATH:\n\n```json\n"
+             + json.dumps(runtime, ensure_ascii=True) + "\n```\n\n"
+             "Append command arguments and the intended --workspace. This identifies the installed runtime; "
+             "it does not grant execution, network or installation authority.\n").encode()
     rendered = {f"{get_adapter(target).skill_root}/stratagent/SKILL.md": data for target in selected}
 
     def preview():
@@ -293,7 +313,7 @@ def connect(service, targets=None, approval=None, apply=False):
             else:
                 observations[name] = None
         payload = {"schema_version": 1, "workspace": str(service.ws.root), "generator_version": __version__,
-                   "platforms": selected, "adapter_contracts": contracts(selected),
+                   "platforms": selected, "adapter_contracts": contracts(selected), "launcher": runtime,
                    "files": [{"path": name, "sha256": digest(content), "size": len(content)} for name, content in sorted(rendered.items())],
                    "observed": observations, "blockers": blockers, "scope": "first-party-instruction-files-only", "activation": "none"}
         return {**payload, "approval": identity(payload), "file_contents": {name: content.decode() for name, content in rendered.items()}}
@@ -322,12 +342,54 @@ def connect(service, targets=None, approval=None, apply=False):
                   "argv": command(service, "connect", "--platforms", ",".join(selected), "--apply", "--approve", result["approval"], "--json")}, connection=result)
 
 
+def setup(service, targets=None, approval=None, apply=False):
+    """Check runtime and preview/connect only the first-party instructions."""
+    from .diagnostics import diagnose
+    health = diagnose(str(service.ws.root), False)
+    if not health["ok"]:
+        return _card(service, "setup-attention", "The local installation needs attention",
+                     "Resolve the reported check before connecting; existing files are preserved.",
+                     {"kind": "inspect-installation", "requires_user": True,
+                      "argv": command(service, "doctor")}, health=health)
+    if targets is None:
+        if apply or approval is not None:
+            raise StratagentError("Choose the current host with --host before applying a setup connection.")
+        return _card(service, "choose-host", "Choose the coding host you are using",
+                     "Select claude, codex, antigravity or generic. No project files have changed.",
+                     {"kind": "choose-host", "requires_user": True,
+                      "instruction": "Use setup --host with the actual current host; do not install several host integrations by default."}, health=health)
+    card = connect(service, targets, approval, apply)
+    card["health"] = health
+    card["setup"] = {"runtime": "available", "instructions": "present" if card["phase"] == "connected" else "conflict" if card["phase"] == "blocked" else "review-required",
+                     "host_loading": "not-observed", "launcher": launcher(),
+                     "next": "Ask the coding agent to use StratAgent for your project. Refresh the host if skill discovery needs it."}
+    card["next_action"]["argv"][len(launcher())] = "setup"
+    if card["phase"] == "connected":
+        card["headline"] = "The local instructions are ready for your coding agent"
+        card["summary"] = "The runtime is available and the project skill is present. Ask your agent to use StratAgent; host loading has not been observed."
+        card["next_action"] = {"kind": "describe-project", "requires_user": False,
+                               "instruction": "Use the user's actual project request with start, or continue next. Do not repeat connection approval when instructions are already present.",
+                               "argv": command(service, "next", "--json")}
+    return card
+
+
 def render(card):
     def plain(value):
         text = str(value)
         return "".join(c if not unicodedata.category(c).startswith("C") else " " for c in text)
 
     lines = ["StratAgent", "", plain(card["headline"]), plain(card["summary"])]
+    for check in card.get("health", {}).get("checks", []):
+        if check["status"] == "fail":
+            lines += ["", plain(check.get("message", check["id"])), plain(check.get("action", "Inspect this check before continuing."))]
+    if card.get("setup"):
+        lines += ["", "Runtime: available. Project instructions: " + card["setup"]["instructions"] + ".",
+                  "Host loading: not observed. " + card["setup"]["next"]]
+    if card.get("selected_context", {}).get("paths"):
+        context = card["selected_context"]
+        lines += ["", "Selected project documents: " + ", ".join(plain(path) for path in context["paths"])]
+        if not context["complete_within_scope"]:
+            lines += ["Some selected documents are unavailable; review the missing evidence before claiming the setup is sufficient."]
     environment = card.get("environment", {})
     if environment.get("summary"):
         summary = environment["summary"]
@@ -357,10 +419,22 @@ def render(card):
         lines += ["", "Files:"] + ["  " + plain(c["action"]) + " " + plain(c["path"]) for c in review["file_changes"]]
         if review["blockers"]:
             lines += ["", "Resolve: " + plain([b.get("rule", b) if isinstance(b, dict) else b for b in review["blockers"]])]
+        quality = review.get("recommendation_review", {})
+        if quality.get("status") == "assessed":
+            lines += ["", "Why each new resource is needed:"]
+            lines += ["  " + plain(row["candidate_id"]) + ": " + plain(row["reason"]) + " Source says: " + plain(row["candidate_quote"]) + " Alternative: " + plain(row["alternative"]) for row in quality["resource_explanations"]]
+            if quality["remaining_gaps"]:
+                lines += ["Remaining gaps: " + plain([need["need"] for need in quality["remaining_gaps"]])]
+        else:
+            lines += ["", "This plan has no needs assessment; review necessity separately."]
         if review.get("assessed_needs"):
             lines += ["", "Assessed needs:"] + ["  " + plain(item["status"]) + ": " + plain(item["need"]) + " — " + plain(item["reason"]) for item in review["assessed_needs"]]
     if card.get("fit_review"):
         assessment = card["fit_review"]["assessment"]
+        if card["fit_review"].get("request_coverage"):
+            lines += ["", "Your request, part by part:"]
+            for entry in card["fit_review"]["request_coverage"]:
+                lines.append("  " + plain(entry["status"]) + ": " + plain(entry["quote"]) + " — " + plain(entry["reason"]))
         lines += ["", "Why: " + plain(assessment["reason"]), "", "Needs and coverage:"]
         lines += ["  " + plain(item["status"]) + ": " + plain(item["need"]) + " — " + plain(item["reason"]) for item in assessment["needs"]]
         lines += ["", "Alternatives:"] + ["  " + plain(item) for item in assessment["alternatives"]]

@@ -4,6 +4,8 @@ This guide covers the **0.9.0 developer preview**. The older 0.8.0 preview
 retains its original commands. PyPI publication is deferred. You can also install
 a verified wheel from the [release installation guide](publishing.md#verify-and-install).
 
+For the next unreleased source workflow, see [0.10.0 setup and review](quickstart-development.md).
+
 ## Install once
 
 Clone the repository and install into its local environment:

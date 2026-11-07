@@ -125,11 +125,14 @@ def _workspace_checks(workspace, runtime_ready, check_files, add):
             "Inspect the local writer/state; do not automatically delete or replace lock markers.")
     else:
         add("legacy-write-lock", "pass", "No legacy write-lock marker is present; active writer locking is not probed.")
-    if all(value is None for value in before.values()) and all(path.name == ".mutation-lock" for path in state.iterdir()):
+    if all(value is None for value in before.values()) and all(path.name in (".mutation-lock", "context.json") for path in state.iterdir()):
         marker = workspace.path(".stratagent/.mutation-lock")
         if marker.exists() and (not stat.S_ISREG(marker.lstat().st_mode) or marker.lstat().st_size > 1):
             raise StratagentError("Invalid local coordination marker.")
-        add("workspace-initialization", "skip", "Only the local coordination marker exists; no project has been initialized.",
+        if workspace.path(".stratagent/context.json").exists() and runtime_ready:
+            from .context import selection
+            selection(workspace)
+        add("workspace-initialization", "skip", "Only local coordination or selected-document metadata exists; no project has been initialized.",
             "Start a project when ready; the existing coordination marker is retained.")
         add("managed-outputs", "skip", "No initialized managed outputs to verify.")
         return
@@ -147,6 +150,8 @@ def _workspace_checks(workspace, runtime_ready, check_files, add):
         from .lifecycle import Transactions
         service = Stratagent(workspace.root)
         service.manifest()
+        from .context import selection
+        selection(workspace)
         service.policy()
         lock = service.lock()
         add("workspace-metadata", "pass", "Manifest, policy and ownership lock schemas are valid.")

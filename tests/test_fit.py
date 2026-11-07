@@ -39,6 +39,10 @@ class FitTests(unittest.TestCase):
                            'status': 'host' if outcome == 'keep' else 'gap',
                            'reason': 'The host can perform the requested implementation; no extension is justified.' if outcome == 'keep' else 'Research the requested testing capability before choosing an extension.',
                            'evidence_refs': ['request'], 'existing': []}],
+                'coverage': [{'part_id': part['id'], 'status': 'covered' if index == 0 else 'constraint',
+                              'need_indexes': [0] if index == 0 else [],
+                              'reason': 'Address the requested work.' if index == 0 else 'Preserve the explicit excluded scope without adding tools.'}
+                             for index,part in enumerate(request['request_parts'])],
                 'alternatives': ['Research an additional testing skill only if current coverage proves insufficient.']}
 
     def propose(self, result, assessment=None):
@@ -73,7 +77,7 @@ class FitTests(unittest.TestCase):
             self.assertNotIn(proposed['fit_review']['approval'], render(card))
             self.assertIn('Needs and coverage:', render(card))
             with redirect_stdout(io.StringIO()):
-                self.assertEqual(main(card['next_action']['argv'][3:]), 0)
+                self.assertEqual(main(card['next_action']['argv'][card['next_action']['argv'].index('-m') + 2:]), 0)
             self.assertEqual(guide(self.service)['phase'], 'kept')
             before = file_state(self.root)
             self.driver.accept_fit(started['session']['id'], proposed['fit_review']['approval'])
