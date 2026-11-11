@@ -19,16 +19,16 @@ Describe your project → Review the proposed workspace → Approve exact change
 
 **Developer preview · Python 3.11+ · macOS, Linux & Windows · MIT**
 
-[0.10.0 release notes](docs/releases/0.10.0.md) · [Offline walkthrough](docs/demo-0.8.0.md) · [Support](SUPPORT.md) · [Security](SECURITY.md)
+[PyPI package](https://pypi.org/project/stratagent-cli/0.10.0/) · [0.10.0 release](https://github.com/eturkok/stratagent/releases/tag/v0.10.0) · [Release notes](https://github.com/eturkok/stratagent/blob/main/docs/releases/0.10.0.md) · [Offline walkthrough](https://github.com/eturkok/stratagent/blob/main/docs/demo-0.8.0.md) · [Support](https://github.com/eturkok/stratagent/blob/main/SUPPORT.md) · [Security](https://github.com/eturkok/stratagent/blob/main/SECURITY.md)
 
-**0.10.0 source and release candidate:** [simpler setup, selected project context and grounded
-recommendation review](docs/quickstart-development.md). The public 0.9.0 preview
-keeps its versioned installation and behavior.
+**0.10.0 is published on PyPI and GitHub.** It includes simpler setup, selected
+project context, grounded recommendation review, maintenance checkpoints and host
+handoff summaries. See the [setup guide](https://github.com/eturkok/stratagent/blob/main/docs/quickstart-development.md).
 
 ## What makes StratAgent useful?
 
-- **See the existing setup.** Inspect project-local guidance, skill/role metadata, recorded ownership and possible overlaps before proposing additions. Existing files remain under their current ownership; matching names do not prove equivalent capabilities. [Inspection scope](docs/existing-environment.md).
-- **Keep a sufficient setup.** In the 0.9.0 workflow, your agent assesses needs, existing/host coverage and alternatives before adding tools. You can accept a no-change outcome with no search or new environment files; concrete gaps guide research. [How assessments work](docs/workspace-fit.md).
+- **See the existing setup.** Inspect project-local guidance, skill/role metadata, recorded ownership and possible overlaps before proposing additions. Existing files remain under their current ownership; matching names do not prove equivalent capabilities. [Inspection scope](https://github.com/eturkok/stratagent/blob/main/docs/existing-environment.md).
+- **Keep a sufficient setup.** In the 0.10.0 workflow, your agent assesses needs, existing/host coverage and alternatives before adding tools. You can accept a no-change outcome with no search or new environment files; concrete gaps guide research. [How assessments work](https://github.com/eturkok/stratagent/blob/main/docs/workspace-fit.md).
 - **A clear division of work.** Compare focused ownership with specialist roles, including responsibilities, dependencies and acceptance criteria grounded in the project request.
 - **Choices you can inspect.** Research current GitHub and MCP Registry sources. Review relevance, alternatives, source provenance, license/static findings and coverage gaps before selecting resources. Search is bounded; popularity does not establish safety.
 - **Changes you control.** Review the exact file changes, authorize them and verify the installed result. Existing user files, conflicting edits and stale approvals are protected by the apply/update lifecycle.
@@ -38,7 +38,7 @@ StratAgent prepares the environment; your coding host builds the application. It
 
 ## Work through your coding agent
 
-**0.10.0 developer preview.** Start with the isolated installer below. Earlier
+**0.10.0 developer preview.** Install from PyPI below, then connect your coding host. Earlier
 previews retain their versioned installation and behavior.
 
 After installing StratAgent locally, tell your existing coding agent:
@@ -47,7 +47,7 @@ After installing StratAgent locally, tell your existing coding agent:
 > useful resources and file changes before applying anything. Keep my current
 > files and excluded features intact.
 
-[Start-to-finish setup guide](docs/quickstart.md). Your part is simple:
+[Start-to-finish setup guide](https://github.com/eturkok/stratagent/blob/main/docs/quickstart-development.md). Your part is simple:
 
 1. **Describe the outcome and constraints.** Explain the project, what matters and what to leave out.
 2. **Review the meaningful choices.** See whether the existing setup is enough. Review needs, coverage, alternatives and gaps; public search terms and file changes follow only when needed.
@@ -64,22 +64,36 @@ separate activation. A host refresh/new session may be needed for discovery.
 The agent then follows `start` and `next --json`, loading detailed schemas or
 full diffs when the current step needs them.
 
-[Agent-first workflow and limits](docs/agent-first-experience.md). Advanced CLI and
+[Agent-first workflow and limits](https://github.com/eturkok/stratagent/blob/main/docs/agent-first-experience.md). Advanced CLI and
 session-scoped MCP integrations remain available below.
 
 ## Put it to work
 
 | Your project idea | What to review in its workspace plan | Example |
 | --- | --- | --- |
-| React/Next.js frontend + FastAPI/PostgreSQL API | Frontend/API ownership, interface coordination, testing and relevant skill/MCP candidates | [SaaS manifest fixtures](examples/projects/saas) |
-| A pandas data-review pipeline | Data-quality, testing and privacy responsibilities; offline constraints and resource gaps | [Data project fixture](examples/projects/data-review) |
-| A small offline CSV inventory checker, without a web UI | Focused ownership and test review, without unnecessary web/payment tooling | [Runnable project + walkthrough](examples/projects/inventory-review/README.md) |
+| React/Next.js frontend + FastAPI/PostgreSQL API | Frontend/API ownership, interface coordination, testing and relevant skill/MCP candidates | [SaaS manifest fixtures](https://github.com/eturkok/stratagent/blob/main/examples/projects/saas) |
+| A pandas data-review pipeline | Data-quality, testing and privacy responsibilities; offline constraints and resource gaps | [Data project fixture](https://github.com/eturkok/stratagent/blob/main/examples/projects/data-review) |
+| A small offline CSV inventory checker, without a web UI | Focused ownership and test review, without unnecessary web/payment tooling | [Runnable project + walkthrough](https://github.com/eturkok/stratagent/blob/main/examples/projects/inventory-review/README.md) |
 
-The first two examples are dependency fixtures, not finished applications. The CSV example includes working code and a [recorded Codex pilot](docs/pilot-validation.md).
+The first two examples are dependency fixtures, not finished applications. The CSV example includes working code and a [recorded Codex pilot](https://github.com/eturkok/stratagent/blob/main/docs/pilot-validation.md).
 
-## Try it locally
+## Install from PyPI
 
-From a reviewed source checkout, install once without shell activation:
+Python 3.11+ is required. In an activated virtual environment:
+
+```sh
+python -m pip install stratagent-cli==0.10.0
+stratagent --version
+stratagent setup --host codex --workspace /absolute/path/to/your-project
+```
+
+Select your current host: `codex`, `claude`, `antigravity`, or `generic`.
+`setup` checks health and previews the local first-party connection; your agent
+reviews and applies the exact connection within your authorization. Installation
+does not automatically activate a host or an MCP server.
+
+<details>
+<summary>Install from reviewed source without shell activation</summary>
 
 ```sh
 git clone https://github.com/eturkok/stratagent.git
@@ -87,22 +101,25 @@ cd stratagent
 python3 scripts/install.py --workspace /absolute/path/to/your-project --host codex
 ```
 
-The installer prints the exact launcher and an instruction for your existing
-coding agent. Use `python` on Windows and choose your current host. See the
-[setup guide](docs/quickstart-development.md) for offline wheels and upgrades.
-[Attested preview assets](https://github.com/eturkok/stratagent/releases) are
-available only after the publication workflow completes; PyPI setup is separate.
+The source installer creates an isolated runtime and prints its exact launcher
+and an instruction for your coding agent. Use `python` on Windows. See the
+[setup guide](https://github.com/eturkok/stratagent/blob/main/docs/quickstart-development.md) for offline wheels and upgrades.
+
+</details>
+
+[Attested GitHub preview assets](https://github.com/eturkok/stratagent/releases/tag/v0.10.0)
+provide verified wheels and native offline bundles alongside the PyPI release.
 
 For repeated use, ask your agent to check `maintain --json`. It summarizes local
 changes against a reviewed hash-only checkpoint. `handoff --host claude --json`
 prepares an inert scope/decision summary for a host change. See
-[maintenance and handoff](docs/maintenance-handoff.md) and the
-[paired outcome evaluation](docs/outcome-evaluation.md).
+[maintenance and handoff](https://github.com/eturkok/stratagent/blob/main/docs/maintenance-handoff.md) and the
+[paired outcome evaluation](https://github.com/eturkok/stratagent/blob/main/docs/outcome-evaluation.md).
 
-The [release verification guide](docs/publishing.md#verify-and-install) covers
+The [release verification guide](https://github.com/eturkok/stratagent/blob/main/docs/publishing.md#verify-and-install) covers
 attested wheels and native offline bundles with SBOMs. The source installer
-prints a launcher rather than changing PATH; use that launcher wherever the
-examples below say `stratagent`. See [OS support](docs/os-portability.md).
+prints a launcher rather than changing PATH; when using that installation route,
+use its launcher wherever the examples below say `stratagent`. See [OS support](https://github.com/eturkok/stratagent/blob/main/docs/os-portability.md).
 
 **Explore without network access or a model:**
 
@@ -140,7 +157,7 @@ stratagent verify --workspace /absolute/path/to/project
 
 IDs and hashes above are placeholders from your own command results. Use the same workspace throughout. **Search approval is not installation approval.** The model cannot grant either approval through the scoped bridge.
 
-Follow the [complete model → research → review walkthrough](docs/orchestration.md) for host setup and exact commands. Prefer a simpler CLI entry point? [`prepare`](docs/discovery.md) performs live discovery with a disclosed rule-based draft unless you supply a model/human proposal; it never silently applies the environment.
+Follow the [complete model → research → review walkthrough](https://github.com/eturkok/stratagent/blob/main/docs/orchestration.md) for host setup and exact commands. Prefer a simpler CLI entry point? [`prepare`](https://github.com/eturkok/stratagent/blob/main/docs/discovery.md) performs live discovery with a disclosed rule-based draft unless you supply a model/human proposal; it never silently applies the environment.
 
 </details>
 
@@ -159,11 +176,11 @@ Follow the [complete model → research → review walkthrough](docs/orchestrati
 - **MCP stays inactive:** server proposals never overwrite active host settings or launch packages. Optional npm artifact/tool audits are separate from Registry metadata review, not permission to execute.
 - **No silent changes:** approvals bind exact content and outputs; identical setup verifies/no-ops, while collisions, drift and stale/partial research block application. Keep local project state private.
 
-This is a working developer preview, **not a production/GA release**. Native lifecycle CI covers macOS/Linux/Windows on Python 3.11 and 3.14. Host formats are reviewed against official documentation; broader native-host and human-usefulness checks are explicitly waived for the current scope, with their evidence limits recorded in [release readiness](docs/release-readiness.md).
+This is a working developer preview, **not a production/GA release**. Native lifecycle CI covers macOS/Linux/Windows on Python 3.11 and 3.14. Host formats are reviewed against official documentation; broader native-host and human-usefulness checks are explicitly waived for the current scope, with their evidence limits recorded in [release readiness](https://github.com/eturkok/stratagent/blob/main/docs/release-readiness.md).
 
-Use `stratagent platforms` to inspect versioned adapter capabilities. These renderer contracts are included in exact-plan approvals and installation provenance; they describe generated files, while actual host/version validation is tracked separately in the [interoperability matrix](docs/interoperability.md).
+Use `stratagent platforms` to inspect versioned adapter capabilities. These renderer contracts are included in exact-plan approvals and installation provenance; they describe generated files, while actual host/version validation is tracked separately in the [interoperability matrix](https://github.com/eturkok/stratagent/blob/main/docs/interoperability.md).
 
-Follow the [host setup guide](docs/host-setup.md) for Claude Code, Codex and Antigravity skill/role locations and scoped local MCP bridge configurations. Claude's reserved local skill names are mapped to portable exports with an `sa-` prefix; original source evidence remains unchanged.
+Follow the [host setup guide](https://github.com/eturkok/stratagent/blob/main/docs/host-setup.md) for Claude Code, Codex and Antigravity skill/role locations and scoped local MCP bridge configurations. Claude's reserved local skill names are mapped to portable exports with an `sa-` prefix; original source evidence remains unchanged.
 
 ## Where we are taking StratAgent
 
@@ -172,7 +189,7 @@ more useful result with it, with less setup effort and fewer unnecessary additio
 We want the smallest justified environment for the job. An informed recommendation
 to add nothing should be a successful outcome.
 
-The **0.9.0 preview** inspects the existing environment and
+The **0.10.0 preview** inspects the existing environment and
 supports a grounded needs assessment. Keep a sufficient setup through explicit
 review, or use concrete gaps to guide research and resource choices. Task-performance
 improvements and exhaustive semantic coverage remain to be demonstrated.
@@ -181,23 +198,23 @@ The product track continues beyond the current inspection, reviewed setup
 and lifecycle capabilities:
 
 - **Build on existing-environment observations.** Bounded inventory and reviewed keep/research assessments are implemented; broader semantic deduplication remains further work.
-- **Demonstrate recommendation value.** Needs, evidence, coverage and alternatives now have a structured review path; evaluate actual task outcomes against the same coding host without StratAgent.
-- **Make ongoing work easier.** Give a concise account of what changed, what still fits and what needs review, with explicit limits when handing work between supported hosts.
+- **Demonstrate recommendation value.** Needs, evidence, coverage and alternatives have a structured review path. The first [paired outcome record](https://github.com/eturkok/stratagent/blob/main/docs/outcome-evaluation.md) preserves equal macOS acceptance and an unfavorable Windows result; a general quality advantage remains unestablished.
+- **Make ongoing work easier.** Bounded maintenance checkpoints and inert host handoff summaries are implemented. Broader semantic fit and native handoff outcomes still need evaluation.
 
 We will judge progress by useful outcomes, setup effort, unnecessary recommendations
 and voluntary repeat use. Broad user preference, task-performance gains and seamless
-cross-host handoff have not been established. The [product direction](docs/product-direction.md)
-records the strategy and evidence gaps; the [engineering plan](docs/production-readiness.md)
+cross-host handoff have not been established. The [product direction](https://github.com/eturkok/stratagent/blob/main/docs/product-direction.md)
+records the strategy and evidence gaps; the [engineering plan](https://github.com/eturkok/stratagent/blob/main/docs/production-readiness.md)
 tracks implementation and release readiness separately.
 
 ## Go deeper
 
-- **Prepare a distribution:** [reproducible developer bundles, SBOM and package rollback](docs/releasing.md). For the 0.9.0 assets and their attestations, follow the [release verification guide](docs/publishing.md#verify-and-install).
-- **Check a setup:** run `stratagent doctor --workspace PATH`; add `--check-files` for bounded managed-output verification. See [health checks and support reports](docs/diagnostics.md) for findings and next steps. The command makes no network calls and never repairs files.
-- **Build a workspace:** [existing-host orchestration](docs/orchestration.md) · [architectural decisions](docs/decision-workflow.md)
-- **Understand discovery:** [GitHub/Registry coverage](docs/discovery.md) · [model-planned runtime research](docs/runtime-research.md)
-- **Review trust:** [resource policy](docs/resource-assurance.md) · [artifact/tool audits](docs/artifact-assurance.md)
-- **Operate safely:** [updates, removal and recovery](docs/lifecycle.md) · [OS portability](docs/os-portability.md)
-- **Evaluate or contribute:** [architecture](docs/architecture.md) · [validation](docs/validation.md) · [production plan](docs/production-readiness.md)
+- **Prepare a distribution:** [reproducible developer bundles, SBOM and package rollback](https://github.com/eturkok/stratagent/blob/main/docs/releasing.md). For the 0.10.0 assets and their attestations, follow the [release verification guide](https://github.com/eturkok/stratagent/blob/main/docs/publishing.md#verify-and-install).
+- **Check a setup:** run `stratagent doctor --workspace PATH`; add `--check-files` for bounded managed-output verification. See [health checks and support reports](https://github.com/eturkok/stratagent/blob/main/docs/diagnostics.md) for findings and next steps. The command makes no network calls and never repairs files.
+- **Build a workspace:** [existing-host orchestration](https://github.com/eturkok/stratagent/blob/main/docs/orchestration.md) · [architectural decisions](https://github.com/eturkok/stratagent/blob/main/docs/decision-workflow.md)
+- **Understand discovery:** [GitHub/Registry coverage](https://github.com/eturkok/stratagent/blob/main/docs/discovery.md) · [model-planned runtime research](https://github.com/eturkok/stratagent/blob/main/docs/runtime-research.md)
+- **Review trust:** [resource policy](https://github.com/eturkok/stratagent/blob/main/docs/resource-assurance.md) · [artifact/tool audits](https://github.com/eturkok/stratagent/blob/main/docs/artifact-assurance.md)
+- **Operate safely:** [updates, removal and recovery](https://github.com/eturkok/stratagent/blob/main/docs/lifecycle.md) · [OS portability](https://github.com/eturkok/stratagent/blob/main/docs/os-portability.md)
+- **Evaluate or contribute:** [architecture](https://github.com/eturkok/stratagent/blob/main/docs/architecture.md) · [validation](https://github.com/eturkok/stratagent/blob/main/docs/validation.md) · [production plan](https://github.com/eturkok/stratagent/blob/main/docs/production-readiness.md)
 
-[MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+[MIT license](https://github.com/eturkok/stratagent/blob/main/LICENSE) · [Third-party notices](https://github.com/eturkok/stratagent/blob/main/THIRD_PARTY_NOTICES.md)
