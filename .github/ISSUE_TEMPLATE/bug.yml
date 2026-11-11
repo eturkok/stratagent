@@ -4,7 +4,7 @@ title: '[Bug] '
 body:
   - type: markdown
     attributes:
-      value: 'Do not upload private prompts, .stratagent state, backups or credentials. Report security issues privately: https://github.com/etrkk5/stratagent/security/advisories/new'
+      value: 'Do not upload private prompts, .stratagent state, backups or credentials. Report security issues privately: https://github.com/eturkok/stratagent/security/advisories/new'
   - type: input
     id: environment
     attributes:
