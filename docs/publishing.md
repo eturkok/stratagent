@@ -72,7 +72,24 @@ stratagent doctor
 No host is activated. Follow [host setup](host-setup.md) and separate approvals.
 [Rollback](releasing.md#roll-back-without-losing-project-state) preserves project state.
 
-## Optional PyPI setup
+## Published 0.10.0 checkpoint
+
+On November 11, 2026, the [GitHub preview workflow](https://github.com/eturkok/stratagent/actions/runs/43018483800)
+and [PyPI publishing workflow](https://github.com/eturkok/stratagent/actions/runs/43021671973)
+completed successfully. [PyPI 0.10.0](https://pypi.org/project/stratagent-cli/0.10.0/)
+is public; its wheel/source were taken from the verified GitHub release without
+rebuilding. The publisher is bound to `eturkok/stratagent`, `pypi.yml` and the
+`pypi` environment. Existing versions/assets remain unchanged.
+
+```sh
+python -m pip install stratagent-cli==0.10.0
+```
+
+README changes on the default branch do not replace an already published
+version's package description. Future package releases carry their own README
+snapshot; use absolute documentation links so they also resolve on PyPI.
+
+## PyPI setup reference
 
 The public `stratagent-cli` JSON endpoint returned HTTP 404 on October 23, 2026.
 This historical observation does not reserve its name or establish current ownership. GitHub login does not

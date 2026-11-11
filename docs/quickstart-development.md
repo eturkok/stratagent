@@ -3,7 +3,17 @@
 This guide applies to the **0.10.0 source checkout** containing
 `scripts/install.py`. The immutable [0.9.0 preview](https://github.com/eturkok/stratagent/releases/tag/v0.9.0)
 and its [versioned guide](https://github.com/eturkok/stratagent/blob/v0.9.0/docs/quickstart.md)
-remain available. PyPI publication is deferred.
+remain available. [0.10.0 is also published on PyPI](https://pypi.org/project/stratagent-cli/0.10.0/).
+
+For the published package, use an activated Python 3.11+ virtual environment:
+
+```sh
+python -m pip install stratagent-cli==0.10.0
+stratagent setup --host codex --workspace /absolute/path/to/your-project
+```
+
+The source installer below remains available for a reviewed checkout and a
+runtime launcher that does not need shell activation.
 
 ## Install once, without shell activation
 
