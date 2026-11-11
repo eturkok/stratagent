@@ -2,7 +2,7 @@
 
 ## Actual first observation — November 11, 2026
 
-Two separate Codex Work agent runs implemented the same original offline,
+On macOS/Python 3.14.7, two separate Codex Work agent runs implemented the same original offline,
 standard-library inventory CLI request. The baseline was instructed to work
 without StratAgent; the assisted run used the first-party workflow and the same
 inherited model. Neither received the other's implementation or the acceptance
@@ -23,6 +23,15 @@ work. Development latency and total reasoning/call costs were not measured on a
 comparable basis and no savings are claimed. Both runs created their own tests;
 the fixed evaluator then ran each program in new subprocesses against the same
 valid, invalid, UTF-8/BOM, strict-CSV, missing-file and file-preservation cases.
+
+Native Windows/Python 3.11 CI subsequently found an unfavorable outcome in the
+saved assisted program, which sets `csv.field_size_limit(sys.maxsize)` without
+the portable overflow fallback present in the baseline. The original programs
+are retained as observed model outputs, rather than repaired and relabelled as
+the original comparison. Platform CI uses `--record-only`: unsuccessful candidate
+cases remain false in the JSON report and the counts are printed in its log.
+This checks the measurement pipeline; it does not certify either example program
+on every platform. Normal invocation still exits 2 if either candidate fails.
 
 The assisted run initially started before connecting the first-party skill.
 The added definition correctly made its prior project context stale; it followed
@@ -53,6 +62,8 @@ The output must be a new file; existing evidence is never overwritten. Failed
 cases and input mutations stay visible. The evaluator does not launch a model,
 invent task results or turn operator-supplied labels into authenticated provenance.
 Running these saved programs reproduces acceptance, not the original model calls.
+Add `--record-only` to retain unfavorable outcomes as measurement data; it never
+changes `passed`, `all_passed`, the case results or the outcome label.
 
 For further benefit measurement, collect actual new paired tasks under the same
 host, repository, request and comparable budget. Retain unfavorable/inconclusive

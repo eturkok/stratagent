@@ -2,7 +2,7 @@
 
 ## 0.10.0 maintenance, handoff and outcome checkpoint — November 11, 2026
 
-- **516 tests discovered: 515 pass, one Windows-only junction check skipped**
+- **517 tests discovered: 516 pass, one Windows-only junction check skipped**
   from source and a separately installed wheel outside the checkout with
   PYTHONPATH unset, macOS/Python 3.14.7. Thirteen maintenance/handoff checks cover
   exact/idempotent observation recording, additions/changes/removals, selected
@@ -25,6 +25,16 @@
   first-party workflow includes maintenance and handoff guidance. A forward test
   detected ambiguous command-side-effect wording, which was clarified to
   `project_files_modified_by_command`. Context invalidation is preserved.
+
+Native CI follow-up: a new checksum fixture initially wrote Windows CRLF bytes;
+the helper now writes portable LF bytes. Windows/Python 3.11 also exposed a
+negative outcome in the original assisted inventory program. The measurement
+pipeline now records actual platform outcomes (including failed cases) instead
+of asserting equal model-task success. Its explicit `--record-only` CI mode
+leaves all case/outcome flags unchanged; normal acceptance still returns 2 for
+unsuccessful candidates. The raw original programs and macOS observation remain
+preserved. This is negative task evidence, not a StratAgent runtime failure or a
+waiver of product tests. [Details](outcome-evaluation.md).
 
 These local results do not claim publication. Final exact-commit CI, reproducible
 bundle and attestation outcomes are recorded by the PR and Actions workflows.
