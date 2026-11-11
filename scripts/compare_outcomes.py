@@ -91,6 +91,7 @@ def main():
     parser.add_argument('--host', required=True, help='Unattested operator label for the coding host')
     parser.add_argument('--model', required=True, help='Unattested operator label; never infer a provider identity')
     parser.add_argument('--output', type=Path, required=True, help='New local report; never overwritten')
+    parser.add_argument('--record-only', action='store_true', help='Record unfavorable candidate outcomes without treating them as harness failure; never mark their cases passed')
     args = parser.parse_args()
     result = compare(args.baseline, args.assisted, args.python, args.host, args.model)
     # Creation is exclusive; a rerun cannot silently replace earlier evidence.
@@ -99,7 +100,7 @@ def main():
         stream.write('\n')
     print(json.dumps({'outcome': result['outcome'], 'baseline': result['baseline']['passed'],
                       'assisted': result['stratagent']['passed'], 'total': result['baseline']['total']}))
-    return 0 if result['baseline']['all_passed'] and result['stratagent']['all_passed'] else 2
+    return 0 if args.record_only or (result['baseline']['all_passed'] and result['stratagent']['all_passed']) else 2
 
 
 if __name__ == '__main__':
