@@ -1,0 +1,3 @@
+# Offline inventory checker
+
+Build a small offline Python CLI, inventory.py INPUT.csv. Input must be UTF-8 (a BOM is allowed), with exactly the columns sku and quantity. Strip surrounding whitespace from values. Require nonempty unique SKUs and nonnegative decimal whole-number quantities. Reject extra or missing columns, incomplete rows, invalid UTF-8, bad CSV quoting, empty inventories and unreadable files. On success print only JSON with rows and total_quantity and exit 0. On invalid input print only JSON containing error and exit 2; never include file contents in errors. Use only the standard library. Preserve README.md. No web UI, database, network calls, or package installation. Include concise local usage instructions in a separate USAGE.md.
