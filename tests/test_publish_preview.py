@@ -52,7 +52,7 @@ class PromotionTests(unittest.TestCase):
             self.checksums(directory)
 
     def checksums(self, directory):
-        (directory / "SHA256SUMS").write_text("".join(f"{release.sha(p.read_bytes())}  {p.name}\n" for p in sorted(directory.iterdir()) if p.name != "SHA256SUMS"))
+        (directory / "SHA256SUMS").write_bytes("".join(f"{release.sha(p.read_bytes())}  {p.name}\n" for p in sorted(directory.iterdir()) if p.name != "SHA256SUMS").encode())
 
     def prepare(self, output=None):
         return promotion.prepare(self.root, self.downloads, output or self.output, self.run, self.jobs, "v0.8.0", COMMIT)
@@ -83,6 +83,22 @@ class PromotionTests(unittest.TestCase):
             mutate(jobs)
             with self.assertRaises(release.ReleaseError):
                 promotion.check_ci(self.run, jobs, COMMIT)
+
+    def test_current_repository_identity_is_required_for_new_ci_after_account_rename(self):
+        self.assertEqual(promotion.REPOSITORY, 'eturkok/stratagent')
+        run = copy.deepcopy(self.run)
+        run['repository']['full_name'] = promotion.LEGACY_REPOSITORY
+        with self.assertRaises(release.ReleaseError):
+            promotion.check_ci(run, self.jobs, COMMIT)
+
+    def test_historical_manifest_urls_remain_verifiable_after_account_rename(self):
+        self.prepare()
+        path = self.output / 'RELEASE-MANIFEST.json'
+        manifest = json.loads(path.read_bytes())
+        manifest['ci_url'] = manifest['ci_url'].replace(promotion.REPOSITORY, promotion.LEGACY_REPOSITORY)
+        path.write_bytes(release.canonical(manifest))
+        self.checksums(self.output)
+        promotion.verify_assets(self.output, 'v0.8.0', COMMIT)
 
     def test_missing_extra_or_dirty_bundle_fails_before_output(self):
         directory = self.downloads / promotion.BUNDLES[0]

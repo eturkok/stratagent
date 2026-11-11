@@ -6,7 +6,7 @@
    `tests.yml` at the exact release commit. Earlier passing runs do not qualify
    after changes to code, documentation or publication tooling.
 2. Run `preview-release` (`release.yml`) on main with that successful run ID and
-   `v0.9.0`. It rejects other branches/events/workflows/commits, incomplete jobs,
+   `v0.10.0`. It rejects other branches/events/workflows/commits, incomplete jobs,
    dirty bundles, changed bytes and an existing release.
 3. Six native bundles are verified without rebuilding and packed into deterministic
    ZIPs. The canonical Ubuntu/Python 3.11 wheel/source archive are exposed separately.
@@ -31,16 +31,16 @@ published bytes require a new version; rollback preserves the original release.
 
 ## Verify and install
 
-These instructions target 0.9.0. Confirm that the public release is visible before
+These instructions target 0.10.0. Confirm that the public release is visible before
 following them; the workflow and release manifest record publication success.
 
-Download from https://github.com/etrkk5/stratagent/releases/tag/v0.9.0.
+Download from https://github.com/eturkok/stratagent/releases/tag/v0.10.0.
 The application wheel is universal; PyYAML still needs a compatible wheel.
 For every asset you will use, verify signed provenance (network and an
 authenticated GitHub CLI may be needed):
 
 ```sh
-gh attestation verify stratagent_cli-0.9.0-py3-none-any.whl --repo etrkk5/stratagent --signer-workflow etrkk5/stratagent/.github/workflows/release.yml --source-ref refs/heads/main --deny-self-hosted-runners
+gh attestation verify stratagent_cli-0.10.0-py3-none-any.whl --repo eturkok/stratagent --signer-workflow eturkok/stratagent/.github/workflows/release.yml --source-ref refs/heads/main --deny-self-hosted-runners
 ```
 
 Compare the source commit against the release manifest/tag; add `--source-digest
@@ -52,7 +52,7 @@ SHA256` results. Hashes alone do not authenticate a publisher.
 In an activated Python 3.11+ virtual environment, install the downloaded wheel:
 
 ```sh
-python -m pip install ./stratagent_cli-0.9.0-py3-none-any.whl
+python -m pip install ./stratagent_cli-0.10.0-py3-none-any.whl
 stratagent --version
 stratagent doctor
 ```
@@ -64,7 +64,7 @@ need an independently obtained compatible PyYAML wheel. Verify the ZIP before
 extracting it into a new directory, then run there in a virtual environment:
 
 ```sh
-python -m pip install --no-index --find-links . stratagent-cli==0.9.0
+python -m pip install --no-index --find-links . stratagent-cli==0.10.0
 stratagent --version
 stratagent doctor
 ```
@@ -75,14 +75,14 @@ No host is activated. Follow [host setup](host-setup.md) and separate approvals.
 ## Optional PyPI setup
 
 The public `stratagent-cli` JSON endpoint returned HTTP 404 on October 23, 2026.
-This does not reserve its name or establish ownership. GitHub login does not
+This historical observation does not reserve its name or establish current ownership. GitHub login does not
 sign in to PyPI. The account owner must sign in, complete required account
 authentication and configure this pending Trusted Publisher:
 
 | Field | Value |
 | --- | --- |
 | Project | `stratagent-cli` |
-| Repository owner | `etrkk5` |
+| Repository owner | `eturkok` |
 | Repository | `stratagent` |
 | Workflow filename | `pypi.yml` |
 | Environment | `pypi` |
@@ -93,7 +93,7 @@ release/workflow/source attestations, selects the exact released wheel/source
 without rebuilding, and hands only those two files to a separate least-privilege
 OIDC publishing job. The pinned PyPA action produces PyPI attestations. No persistent
 PyPI API token is needed. Installing this workflow alone does not publish anything;
-account/publisher association is required. `0.9.0` has no PEP 440 prerelease suffix,
+account/publisher association is required. `0.10.0` has no PEP 440 prerelease suffix,
 so pip/PyPI treats it as a normal version even though the product label remains
 developer preview. Review this distinction before PyPI publication.
 

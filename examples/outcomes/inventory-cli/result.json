@@ -1,0 +1,212 @@
+{
+  "accepted_case_delta": 0,
+  "baseline": {
+    "all_passed": true,
+    "candidate_and_readme_preserved": true,
+    "cases": [
+      {
+        "id": "basic",
+        "passed": true
+      },
+      {
+        "id": "bom-and-whitespace",
+        "passed": true
+      },
+      {
+        "id": "zero",
+        "passed": true
+      },
+      {
+        "id": "quoted-sku",
+        "passed": true
+      },
+      {
+        "id": "negative",
+        "passed": true
+      },
+      {
+        "id": "fraction",
+        "passed": true
+      },
+      {
+        "id": "plus-sign",
+        "passed": true
+      },
+      {
+        "id": "exponent",
+        "passed": true
+      },
+      {
+        "id": "nan",
+        "passed": true
+      },
+      {
+        "id": "missing-quantity",
+        "passed": true
+      },
+      {
+        "id": "missing-sku",
+        "passed": true
+      },
+      {
+        "id": "duplicate",
+        "passed": true
+      },
+      {
+        "id": "missing-column",
+        "passed": true
+      },
+      {
+        "id": "extra-column",
+        "passed": true
+      },
+      {
+        "id": "extra-field",
+        "passed": true
+      },
+      {
+        "id": "short-row",
+        "passed": true
+      },
+      {
+        "id": "header-only",
+        "passed": true
+      },
+      {
+        "id": "empty-file",
+        "passed": true
+      },
+      {
+        "id": "invalid-utf8",
+        "passed": true
+      },
+      {
+        "id": "bad-quoting",
+        "passed": true
+      },
+      {
+        "id": "bare-quote",
+        "passed": true
+      },
+      {
+        "id": "missing-file",
+        "passed": true
+      }
+    ],
+    "passed": 22,
+    "program_sha256": "3a3658af02b28fd5cc3650f3d0f9258c3094d249d37c92f3a4e5793bdf4f3542",
+    "task_sha256": "5ffe0e38546fbd4cf9db1b4c0ba627bf1fe0375b3d4a201b5a00ea1206e4bde7",
+    "total": 22
+  },
+  "benchmark": "offline-inventory-cli-v1",
+  "host_label": "Codex Work",
+  "labels_attested": false,
+  "limitations": [
+    "One task, not a representative corpus or blinded experiment.",
+    "Host/model labels are operator supplied; comparable generation budgets are not enforced.",
+    "No development-time, user-preference, retention or general superiority claim.",
+    "Fixture evaluation subprocess time is not time to implement the task."
+  ],
+  "method": "Maintainer-controlled paired forward test; separate task-local agent runs and fixed executable acceptance.",
+  "model_label": "same inherited model; identity not attested",
+  "outcome": "equal-task-acceptance",
+  "schema_version": 1,
+  "stratagent": {
+    "all_passed": true,
+    "candidate_and_readme_preserved": true,
+    "cases": [
+      {
+        "id": "basic",
+        "passed": true
+      },
+      {
+        "id": "bom-and-whitespace",
+        "passed": true
+      },
+      {
+        "id": "zero",
+        "passed": true
+      },
+      {
+        "id": "quoted-sku",
+        "passed": true
+      },
+      {
+        "id": "negative",
+        "passed": true
+      },
+      {
+        "id": "fraction",
+        "passed": true
+      },
+      {
+        "id": "plus-sign",
+        "passed": true
+      },
+      {
+        "id": "exponent",
+        "passed": true
+      },
+      {
+        "id": "nan",
+        "passed": true
+      },
+      {
+        "id": "missing-quantity",
+        "passed": true
+      },
+      {
+        "id": "missing-sku",
+        "passed": true
+      },
+      {
+        "id": "duplicate",
+        "passed": true
+      },
+      {
+        "id": "missing-column",
+        "passed": true
+      },
+      {
+        "id": "extra-column",
+        "passed": true
+      },
+      {
+        "id": "extra-field",
+        "passed": true
+      },
+      {
+        "id": "short-row",
+        "passed": true
+      },
+      {
+        "id": "header-only",
+        "passed": true
+      },
+      {
+        "id": "empty-file",
+        "passed": true
+      },
+      {
+        "id": "invalid-utf8",
+        "passed": true
+      },
+      {
+        "id": "bad-quoting",
+        "passed": true
+      },
+      {
+        "id": "bare-quote",
+        "passed": true
+      },
+      {
+        "id": "missing-file",
+        "passed": true
+      }
+    ],
+    "passed": 22,
+    "program_sha256": "ad2b40d404d3bc87b13133260108b902f71a23b2f6d61efa386fe1d6cf216041",
+    "task_sha256": "5ffe0e38546fbd4cf9db1b4c0ba627bf1fe0375b3d4a201b5a00ea1206e4bde7",
+    "total": 22
+  }
+}

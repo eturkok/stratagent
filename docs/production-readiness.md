@@ -8,7 +8,17 @@ A user describes a project. At runtime StratAgent interprets its needs, research
 
 V1 scope is a local CLI plus a narrowly authorized coding-client integration, with host/provider-independent domain logic. It is not a hosted multi-tenant execution service. External text and model output are untrusted data. Popularity is not safety; a policy pass is not a claim of "safest." Source discovery, source review, local installation, credential provision and external process/network activation are separate authorities.
 
-## Latest source checkpoint — November 7, 2026
+## Latest checkpoint — November 11, 2026
+
+Version 0.10.0 adds [bounded maintenance and host handoff](maintenance-handoff.md)
+over the setup/context/recommendation improvements below. Checkpoints record local
+observations, not coverage acceptance; host summaries transfer no execution or
+approval authority. New publication uses the current repository identity while
+historical release-manifest URLs remain verifiable. The [paired outcome record](outcome-evaluation.md)
+separates actual task acceptance from engineering fixtures and general benefit
+claims. PyPI account association remains external to code implementation.
+
+## Earlier source checkpoint — November 7, 2026
 
 Unreleased 0.10.0 improves installation/connection, project grounding and resource
 review in that order. A standard-library source installer uses an isolated runtime

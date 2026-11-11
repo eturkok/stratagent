@@ -48,6 +48,11 @@ jobs:
       - run: python scripts/validate_cli.py
       - name: Offline installer and agent onboarding acceptance
         run: python scripts/validate_onboarding.py --wheelhouse dist
+      - name: Record paired task outcomes including unsuccessful candidate results
+        run: >-
+          python scripts/compare_outcomes.py --baseline examples/outcomes/inventory-cli/baseline
+          --assisted examples/outcomes/inventory-cli/assisted --host "saved maintainer implementations"
+          --model "not launched by CI" --output dist/outcome-acceptance.json --record-only
       - run: python -m pip check
       - run: python -m compileall -q src tests scripts
       - name: Reproduce source/wheel and inspect runtime inventory

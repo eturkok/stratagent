@@ -104,6 +104,24 @@ can review clearing the selection without removing files.
   the assessment's limitations. No new environment files were installed. Continue
   application work only when the user's task authorizes it.
 
+## Maintain and hand off
+
+When the project changes, run `maintain --json` for a bounded local comparison
+against the last reviewed observation checkpoint. Explain changed manifests,
+selected documents, definitions, targets and managed-file drift together. A first
+run has no comparison baseline. After reviewing it, record only those observations
+with `maintain --record --approve APPROVAL --json` within existing authorization.
+Recording a checkpoint does not establish sufficient coverage or accept any plan.
+Resolve incomplete evidence, drift and recovery before recording; reassess changed
+needs through the existing workflow. Never reset sessions or replay public search.
+
+For a requested host change, run `handoff --host DESTINATION --json`. Review its
+scope, installed decisions, provenance and gaps locally. The summary excludes
+private chats and selected-document bodies; inspect it before sharing. The target
+host must assess its own environment and review any target revision/file changes.
+Previous approvals and native runtime guarantees do not transfer. This command
+neither writes target files nor starts a host, tool or agent.
+
 For conflicts, drift, expiry, partial research or interrupted transactions,
 explain the concrete issue and follow the returned recovery/continuation action.
 Never reset state, extend budgets, overwrite user files or relabel missing sources

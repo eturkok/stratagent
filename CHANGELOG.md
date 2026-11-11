@@ -1,7 +1,10 @@
 # Changelog
 
-## Unreleased — 0.10.0 simpler setup and grounded recommendations
+## 0.10.0 — Developer Preview (November 11, 2026)
 
+- Local maintenance summaries and exact reviewed observation checkpoints, plus inert destination-host handoffs preserving scope, installed decisions and source provenance.
+- A reproducible paired inventory-CLI outcome comparison: both actual implementations pass 22/22 on the original macOS run; an unfavorable Windows/Python 3.11 assisted result stays visible. No quality advantage is established.
+- Release CI identity follows `eturkok/stratagent`; historical manifest URLs remain verifiable.
 - One reviewed-source installer creates and verifies an isolated runtime, reuses matching installs and supports offline matching wheels; unmarked environments and shell settings are preserved.
 - `setup --host` separates runtime health, project instructions and unobserved native loading; project connections retain the exact runtime launcher.
 - Explicit bounded README/architecture/test selections supply untrusted current local evidence without recursive scanning, execution or implicit outbound queries.

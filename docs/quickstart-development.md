@@ -1,6 +1,6 @@
-# Simpler setup and grounded recommendations — 0.10.0 source
+# Install and use StratAgent 0.10.0
 
-This guide applies to the next **unreleased 0.10.0 source checkout** containing
+This guide applies to the **0.10.0 source checkout** containing
 `scripts/install.py`. The immutable [0.9.0 preview](https://github.com/eturkok/stratagent/releases/tag/v0.9.0)
 and its [versioned guide](https://github.com/eturkok/stratagent/blob/v0.9.0/docs/quickstart.md)
 remain available. PyPI publication is deferred.
@@ -96,3 +96,5 @@ choices and exact changes, using existing authorization where it applies.
 [Recommendation review](recommendation-review.md) describes the current checks
 and their limits. Real host loading and improved task outcomes remain unmeasured;
 controlled fixtures are not native host sessions or human evaluations.
+
+For project changes and destination-host summaries, use [maintenance and handoff](maintenance-handoff.md).

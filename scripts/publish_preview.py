@@ -16,7 +16,8 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from release import ReleaseError, canonical, regular_bytes, safe_name, sha, verify
 
-REPOSITORY = "etrkk5/stratagent"
+REPOSITORY = "eturkok/stratagent"
+LEGACY_REPOSITORY = "etrkk5/stratagent"
 MATRIX = tuple((os, python) for os in ("ubuntu-latest", "macos-latest", "windows-latest") for python in ("3.11", "3.14"))
 BUNDLES = tuple(f"stratagent-preview-{os}-py{python}" for os, python in MATRIX)
 JOBS = {f"unit ({os}, {python})" for os, python in MATRIX}
@@ -107,7 +108,8 @@ def verify_assets(directory, tag, commit):
     manifest = json.loads(regular_bytes(directory / "RELEASE-MANIFEST.json"))
     if (manifest.get("schema_version") != 1 or manifest.get("tag") != tag or manifest.get("version") != version
             or manifest.get("source_commit") != commit or type(manifest.get("ci_run_id")) is not int
-            or manifest["ci_run_id"] <= 0 or manifest.get("ci_url") != f"https://github.com/{REPOSITORY}/actions/runs/{manifest['ci_run_id']}"):
+            or manifest["ci_run_id"] <= 0 or manifest.get("ci_url") not in {
+                f"https://github.com/{repo}/actions/runs/{manifest['ci_run_id']}" for repo in (REPOSITORY, LEGACY_REPOSITORY)}):
         raise ReleaseError("Release manifest identity differs from the selected tag/commit.")
     names = {f"stratagent-{version}-{n.removeprefix('stratagent-preview-')}.zip" for n in BUNDLES}
     names |= {f"stratagent_cli-{version}-py3-none-any.whl", f"stratagent_cli-{version}.tar.gz"}

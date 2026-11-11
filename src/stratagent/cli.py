@@ -22,6 +22,8 @@ def parser():
         "next": "Explain the next useful step without searching, installing or changing state",
         "context": "Review explicitly selected project documents as local evidence; no recursive scan or execution",
         "environment": "Inspect existing project-local agent guidance, skills and ownership without changing files",
+        "maintain": "Summarize local changes since a reviewed observation checkpoint; never update resources automatically",
+        "handoff": "Export a local scope/decision summary for another host without transferring permissions or conversations",
         "init": "Analyze a prompt and initialize a workspace (no external code)",
         "prepare": "Turn one project idea into researched skills/MCP choices and a reviewable environment blueprint; never auto-install",
         "research-request": "Export project context and a model-neutral runtime search-plan schema; writes nothing",
@@ -67,7 +69,7 @@ def parser():
         sub = commands.add_parser(name, help=help_text)
         sub.add_argument("--workspace", default=argparse.SUPPRESS, help="Project directory (demo may create it)")
         sub.add_argument("--log-json", action="store_true", default=argparse.SUPPRESS, help="Emit structured events to stderr")
-        if name in ("setup", "connect", "start", "next", "environment", "context"):
+        if name in ("setup", "connect", "start", "next", "environment", "context", "maintain", "handoff"):
             sub.add_argument("--json", action="store_true", help="Structured agent response; the default is a concise human view")
         if name in ("start", "setup", "connect"):
             sub.add_argument("--platforms", "--host", help="Current host ID, or comma-separated host IDs for an intentional multi-host setup")
@@ -85,6 +87,11 @@ def parser():
             sub.add_argument("--clear", action="store_true", help="Review clearing the selected-document list, preserving files")
             sub.add_argument("--apply", action="store_true", help="Save only an exactly reviewed selection")
             sub.add_argument("--approve", help="Exact selection review digest, handled by your agent")
+        if name == "maintain":
+            sub.add_argument("--record", action="store_true", help="Save only the exactly reviewed local observation checkpoint")
+            sub.add_argument("--approve", help="Exact current checkpoint review digest, handled by your agent")
+        if name == "handoff":
+            sub.add_argument("--host", required=True, choices=("codex", "claude", "antigravity", "generic"), help="Destination host; no files or target settings are changed")
         if name == "doctor":
             sub.add_argument("--check-files", action="store_true", help="Also verify managed hashes/modes, up to 16 MiB total; never repair")
         if name in ("init", "plan", "prepare", "research-request", "research-preview", "session-start", "revise"):
@@ -237,9 +244,16 @@ def main(argv=None):
         from .lifecycle import Transactions
         from .assurance import Assurance
 
-        if args.command in ("setup", "connect", "start", "next", "environment", "context"):
+        if args.command in ("setup", "connect", "start", "next", "environment", "context", "maintain", "handoff"):
             from .experience import begin, connect, guide, render, setup
             forge = Stratagent(args.workspace)
+            if args.command in ("maintain", "handoff"):
+                from .maintenance import maintain, handoff, render as render_maintenance
+                result = maintain(forge, args.approve, args.record) if args.command == "maintain" else handoff(forge, args.host)
+                print(json.dumps(result, ensure_ascii=True, indent=2, sort_keys=True) if args.json else render_maintenance(result))
+                exit_code = 2 if result["status"] == "attention" else 0
+                event("command.completed", exit_code)
+                return exit_code
             if args.command == "context":
                 from .context import configure, render_context
                 if args.clear and args.paths:
