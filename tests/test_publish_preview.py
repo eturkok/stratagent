@@ -52,7 +52,7 @@ class PromotionTests(unittest.TestCase):
             self.checksums(directory)
 
     def checksums(self, directory):
-        (directory / "SHA256SUMS").write_text("".join(f"{release.sha(p.read_bytes())}  {p.name}\n" for p in sorted(directory.iterdir()) if p.name != "SHA256SUMS"))
+        (directory / "SHA256SUMS").write_bytes("".join(f"{release.sha(p.read_bytes())}  {p.name}\n" for p in sorted(directory.iterdir()) if p.name != "SHA256SUMS").encode())
 
     def prepare(self, output=None):
         return promotion.prepare(self.root, self.downloads, output or self.output, self.run, self.jobs, "v0.8.0", COMMIT)
