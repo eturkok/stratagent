@@ -1,5 +1,35 @@
 # Validation
 
+## 0.10.0 maintenance, handoff and outcome checkpoint — November 11, 2026
+
+- **516 tests discovered: 515 pass, one Windows-only junction check skipped**
+  from source and a separately installed wheel outside the checkout with
+  PYTHONPATH unset, macOS/Python 3.14.7. Thirteen maintenance/handoff checks cover
+  exact/idempotent observation recording, additions/changes/removals, selected
+  documents, scan opt-out, stale approvals, invalid metadata, redirected/FIFO
+  inputs, file drift/missing outputs, recovery, revocations and credential refusal.
+- Both original CLI/lifecycle acceptance workflows pass: 46 verified demo outputs;
+  15 lifecycle commands, four preserved user files and four transactions.
+- Offline installer/onboarding acceptance passes with the final wheel and its
+  compatible local PyYAML wheel: runtime reuse, first-party connection, one selected
+  document, one synthetic keep assessment, zero network/resource additions and
+  the original project file preserved. Compilation and local links also pass.
+- Two actual task-local coding-agent runs produced the paired inventory CLI
+  implementations. Both pass the same **22/22** fixed acceptance cases; no task
+  quality advantage is established. Saved implementations reproduce acceptance
+  without launching a model. [Method and limits](outcome-evaluation.md).
+- New publication requires the current `eturkok/stratagent` CI repository identity;
+  the old identity is refused for new CI, while older manifest URLs still verify.
+  Exact branch/workflow/commit/all-six-job gates remain in force.
+- Local documentation links and diff whitespace checks pass. The packaged
+  first-party workflow includes maintenance and handoff guidance. A forward test
+  detected ambiguous command-side-effect wording, which was clarified to
+  `project_files_modified_by_command`. Context invalidation is preserved.
+
+These local results do not claim publication. Final exact-commit CI, reproducible
+bundle and attestation outcomes are recorded by the PR and Actions workflows.
+The previous field waivers remain unchanged. PyPI association is not implied.
+
 ## Unreleased 0.10.0 setup, selected context and recommendation review — November 7, 2026
 
 The first three product priorities have an engineering implementation:

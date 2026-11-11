@@ -61,7 +61,15 @@ Native host permission/activation differences must remain visible.
 [bounded inventory increment](existing-environment.md) adds local observations;
 semantic coverage and outcome-quality improvements remain unmeasured.
 
-## Latest source checkpoint — November 7, 2026
+## Latest source checkpoint — November 11, 2026
+
+The first bounded maintenance/handoff slice is implemented in 0.10.0:
+[local change summaries, reviewed observation checkpoints and inert destination-host summaries](maintenance-handoff.md).
+The [paired outcome evaluation](outcome-evaluation.md) records actual task acceptance
+without claiming a representative or blinded quality advantage. Broader semantic
+deduplication, diverse tasks, user preference and retention remain unmeasured.
+
+## Earlier source checkpoint — November 7, 2026
 
 The first three practical improvements now have an unreleased 0.10.0 implementation:
 [isolated setup/runtime-bound connection](quickstart-development.md),
