@@ -5,7 +5,7 @@ For usage and setup, start with the [quickstart](docs/quickstart.md), [README](R
 macOS, Linux and Windows are the current developer-preview scope.
 
 Report non-sensitive bugs or feature requests through
-[GitHub Issues](https://github.com/etrkk5/stratagent/issues/new/choose).
+[GitHub Issues](https://github.com/eturkok/stratagent/issues/new/choose).
 Include the package/Python/OS version, command, fixed `doctor` check IDs and a
 minimal synthetic reproduction. Inspect everything before sharing. Do not attach
 `.stratagent/`, transaction backups, private prompts, raw model/session logs or

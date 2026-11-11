@@ -1,6 +1,6 @@
 # StratAgent
 
-[![Tests](https://github.com/etrkk5/stratagent/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/etrkk5/stratagent/actions/workflows/tests.yml)
+[![Tests](https://github.com/eturkok/stratagent/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/eturkok/stratagent/actions/workflows/tests.yml)
 
 **Give your coding agent a workspace built for your project.**
 
@@ -19,9 +19,9 @@ Describe your project → Review the proposed workspace → Approve exact change
 
 **Developer preview · Python 3.11+ · macOS, Linux & Windows · MIT**
 
-[0.9.0 preview release](https://github.com/etrkk5/stratagent/releases/tag/v0.9.0) · [Offline walkthrough](docs/demo-0.8.0.md) · [Support](SUPPORT.md) · [Security](SECURITY.md)
+[0.10.0 release notes](docs/releases/0.10.0.md) · [Offline walkthrough](docs/demo-0.8.0.md) · [Support](SUPPORT.md) · [Security](SECURITY.md)
 
-**Next release, 0.10.0 source:** [simpler setup, selected project context and grounded
+**0.10.0 source and release candidate:** [simpler setup, selected project context and grounded
 recommendation review](docs/quickstart-development.md). The public 0.9.0 preview
 keeps its versioned installation and behavior.
 
@@ -38,8 +38,8 @@ StratAgent prepares the environment; your coding host builds the application. It
 
 ## Work through your coding agent
 
-**0.9.0 developer preview.** Use the versioned installation below for the
-agent-first workflow; the older 0.8.0 preview retains its original commands.
+**0.10.0 developer preview.** Start with the isolated installer below. Earlier
+previews retain their versioned installation and behavior.
 
 After installing StratAgent locally, tell your existing coding agent:
 
@@ -79,20 +79,30 @@ The first two examples are dependency fixtures, not finished applications. The C
 
 ## Try it locally
 
-Install from this repository in a virtual environment:
+From a reviewed source checkout, install once without shell activation:
 
 ```sh
-git clone --branch v0.9.0 --depth 1 https://github.com/etrkk5/stratagent.git
+git clone https://github.com/eturkok/stratagent.git
 cd stratagent
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
-stratagent --help
+python3 scripts/install.py --workspace /absolute/path/to/your-project --host codex
 ```
 
-The command above selects the fixed 0.9.0 preview. The [release verification/install guide](docs/publishing.md#verify-and-install) also covers the application wheel and six native offline bundles with SBOMs. To contribute to development, clone the default branch instead. PyPI publication is deferred; no PyPI installation command is advertised.
+The installer prints the exact launcher and an instruction for your existing
+coding agent. Use `python` on Windows and choose your current host. See the
+[setup guide](docs/quickstart-development.md) for offline wheels and upgrades.
+[Attested preview assets](https://github.com/eturkok/stratagent/releases) are
+available only after the publication workflow completes; PyPI setup is separate.
 
-On Windows, use `python` instead of `python3` and activate with `.venv\Scripts\Activate.ps1` in PowerShell. See [OS support and limitations](docs/os-portability.md).
+For repeated use, ask your agent to check `maintain --json`. It summarizes local
+changes against a reviewed hash-only checkpoint. `handoff --host claude --json`
+prepares an inert scope/decision summary for a host change. See
+[maintenance and handoff](docs/maintenance-handoff.md) and the
+[paired outcome evaluation](docs/outcome-evaluation.md).
+
+The [release verification guide](docs/publishing.md#verify-and-install) covers
+attested wheels and native offline bundles with SBOMs. The source installer
+prints a launcher rather than changing PATH; use that launcher wherever the
+examples below say `stratagent`. See [OS support](docs/os-portability.md).
 
 **Explore without network access or a model:**
 
