@@ -154,6 +154,11 @@ def _review(service, current, details):
 
 def guide(service, session_id=None, details=False):
     card = _guide(service, session_id, details)
+    if card['phase'] in ('ready', 'kept', 'context-changed', 'drift'):
+        card['maintenance_action'] = {'argv': command(service, 'maintain', '--json'),
+                                      'instruction': 'Review local changes against an explicitly recorded checkpoint; recording observations never accepts a plan.'}
+        card['handoff_action'] = {'command': 'stratagent handoff --host DESTINATION --json',
+                                 'instruction': 'Export scope and installed decisions locally when changing hosts. No approval, conversation or activation is transferred.'}
     if card["phase"] not in ("state-attention", "recovery"):
         # Preserve explicit project-scan opt-out on existing workspaces.
         if service.ws.path(MANIFEST).exists() and service.manifest()["analysis"].get("project") is None:
